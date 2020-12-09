@@ -1,21 +1,30 @@
 package com.javakc.pms.dispord.controller;
+import com.alibaba.excel.EasyExcel;
 import com.javakc.commonutil.api.APICODE;
 import com.javakc.pms.dispord.entity.DispOrd;
+import com.javakc.pms.dispord.listener.ExcelListener;
 import com.javakc.pms.dispord.service.DispOrdService;
+import com.javakc.pms.dispord.vo.DispOrdData;
 import com.javakc.pms.dispord.vo.DispOrdQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(tags = "调度指令库管理")
 @RestController
 @RequestMapping("/pms/dispord")
-@CrossOrigin
+//@CrossOrigin
 public class DispOrdController {
 
 
@@ -81,5 +90,46 @@ public class DispOrdController {
         return APICODE.OK();
     }
 
+
+
+    @ApiOperation(value = "列表导出", notes = "使用阿里EasyExcel导出Excel格式的列表数据")
+    @GetMapping("exportEasyExcel")
+    public void exportEasyExcel(HttpServletResponse response) {
+        // ## 查询调度指令库  获取全部信息
+        List<DispOrd> dispOrdList = dispOrdService.findAll();
+        // ## 定义导出列表集合
+        List<DispOrdData> dispOrdDataList = new ArrayList<>();
+
+        for (DispOrd dispOrd : dispOrdList) {   //循环原对象信息  再添加到新对象中。
+            DispOrdData dispOrdData = new DispOrdData();
+            BeanUtils.copyProperties(dispOrd, dispOrdData);     //工具类：直接复制信息互传。注意！必须得全部一致。
+            dispOrdDataList.add(dispOrdData);       //添加完最后  在dispOrdDataList中  就有了全部的记录信息
+        }
+
+        String fileName = "dispOrdList";   //设置文件名
+
+        try {
+            // ## 设置响应信息
+            response.reset();
+            response.setContentType("application/vnd.ms-excel; charset=utf-8");
+            response.setCharacterEncoding("utf-8");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "utf-8") + ".xlsx");
+            //  EasyExcel.输出（响应.获取输出流，表头信息）.表单名.输出（记录信息）
+            EasyExcel.write(response.getOutputStream(), DispOrdData.class).sheet("指令列表").doWrite(dispOrdDataList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @ApiOperation(value = "列表导入", notes = "使用阿里EasyExcel导入Excel格式的列表数据")
+    @PostMapping("importEasyExcel")
+    public void importEasyExcel(MultipartFile file) {
+        try {
+            //  EasyExcel.读取（文件.获取输入流，表头信息，传入dispOrdService保存数据）.默认第一个表单.读取
+            EasyExcel.read(file.getInputStream(), DispOrdData.class, new ExcelListener(dispOrdService)).sheet().doRead();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

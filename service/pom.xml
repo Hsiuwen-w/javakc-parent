@@ -13,10 +13,12 @@
     <packaging>pom</packaging>
     <modules>
         <module>service-pms</module>
+        <module>service-mes</module>
     </modules>
 
 
     <dependencies>
+        <!--公共组件base类-->
         <dependency>
             <groupId>com.javakc</groupId>
             <artifactId>common-util</artifactId>
@@ -28,26 +30,40 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-        <!--负载均衡机制
+        <!--excel上传下载-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
+        <!-- 动态配置 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!--负载均衡机制-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
-        </dependency>-->
-        <!--hystrix依赖
+        </dependency>
+        <!--hystrix依赖 熔断器-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
-        </dependency>-->
-        <!--服务注册
+        </dependency>
+        <!--服务注册-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>-->
-        <!--服务调用
+        </dependency>
+        <!--服务调用-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>-->
+        </dependency>
+        <!--springframework web框架-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -97,10 +113,12 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
+        <!--gson-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
+        <!--单元测试-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

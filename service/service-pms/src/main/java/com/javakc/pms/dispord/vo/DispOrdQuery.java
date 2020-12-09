@@ -2,7 +2,6 @@ package com.javakc.pms.dispord.vo;
 
 import lombok.Data;
 
-import java.util.Date;
 
 /**
  * 自定义封装查询条件--调度指令库

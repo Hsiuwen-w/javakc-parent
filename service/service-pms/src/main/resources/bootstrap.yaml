@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848 # Nacos服务配置中心地址 查询其中的配置文件
+        file-extension: yaml # 指定yaml格式的配置
+  application:
+    name: service-pms   #服务名称
+  profiles:
+    active: dev # 环境设置:dev、test、prod
